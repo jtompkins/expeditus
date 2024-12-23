@@ -3,10 +3,7 @@ import { assertSpyCalls, Spy, spy } from "@std/testing/mock"
 import { expect } from "@std/expect"
 import { DbConnectionPool } from "./dbconnectionpool.ts"
 
-class MockDatabase {
-  close() {
-  }
-}
+class MockDatabase { }
 
 describe("DbConnectionPool<TDriver>", () => {
   let connPool: DbConnectionPool<MockDatabase>
@@ -100,7 +97,7 @@ describe("DbConnectionPool<TDriver>", () => {
 
   describe("when closing the pool", () => {
     it("closes all of the open connections", () => {
-      const closeSpy = spy((_conn: MockDatabase) => {})
+      const closeSpy = spy((_conn: MockDatabase) => { })
       const connPool = new DbConnectionPool(
         1,
         () => new MockDatabase(),

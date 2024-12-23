@@ -1,6 +1,9 @@
 {
   "tasks": {
-    "dev": "deno run -A --env-file src/main.ts"
+    "dev": "deno run -A --env-file src/main.ts",
+    "db:schema": "sqlite3 ./data/dev.db < ./data/bootstrap/schema.sql",
+    "db:seed": "sqlite3 ./data/dev.db < ./data/bootstrap/seed.sql",
+    "db:bootstrap": "deno task db:schema && deno task db:seed"
   },
   "imports": {
     "@db/sqlite": "jsr:@db/sqlite@^0.12.0",

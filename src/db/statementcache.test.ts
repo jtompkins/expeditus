@@ -10,10 +10,10 @@ class MockConnection {
   }
 }
 
-class MockStatement { }
+class MockStatement {}
 
 describe("StatementCache", () => {
-  let cache: StatementCache<MockConnection, MockStatement>;
+  let cache: StatementCache<MockConnection, MockStatement>
   const conn = new MockConnection()
 
   beforeEach(() => {

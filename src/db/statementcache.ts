@@ -2,7 +2,10 @@ interface CacheableConnection<TStatement> {
   prepare(sql: string): TStatement
 }
 
-export class StatementCache<TConnection extends CacheableConnection<TStatement>, TStatement> {
+export class StatementCache<
+  TConnection extends CacheableConnection<TStatement>,
+  TStatement,
+> {
   private _statementCache: Map<TConnection, Map<string, TStatement>>
 
   constructor() {

@@ -8,7 +8,7 @@ insert into users (id, user_name, created, updated) values (5, 'testuser5', unix
 
 delete from urls;
 
-insert into urls (id, user_id, url, slug, created, updated) values (1, 1, 'https://www.youtube.com/watch?v=XfELJU1mRMg', 'rick', unixepoch(), unixepoch());
+insert into urls (id, user_id, url, slug, created, updated) values (1, 1, 'https://www.youtube.com/watch?v=XfELJU1mRMg', 'test', unixepoch(), unixepoch());
 insert into urls (id, user_id, url, slug, created, updated) values (2, 1, 'http://www.example2.com', 'test2', unixepoch(), unixepoch());
 insert into urls (id, user_id, url, slug, created, updated) values (3, 1, 'http://www.example3.com', 'test3', unixepoch(), unixepoch());
 insert into urls (id, user_id, url, slug, created, updated) values (4, 1, 'http://www.example4.com', 'test4', unixepoch(), unixepoch());

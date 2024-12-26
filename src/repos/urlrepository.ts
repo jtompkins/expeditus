@@ -20,6 +20,17 @@ interface Url {
   updated: Date
 }
 
+function dbToEntity(url: DbUrl): Url {
+  return {
+    id: url.id,
+    userId: url.user_id,
+    slug: url.slug,
+    address: url.url,
+    created: new Date(url.created),
+    updated: new Date(url.updated),
+  }
+}
+
 class UrlRepository {
   private readonly _readonlyPool: DbConnectionPool<Database>
   private readonly _writeonlyPool: DbConnectionPool<Database>
@@ -46,14 +57,7 @@ class UrlRepository {
     this._readonlyPool.release(conn)
 
     if (url) {
-      return {
-        id: url.id,
-        userId: url.user_id,
-        slug: url.slug,
-        address: url.url,
-        created: new Date(url.created),
-        updated: new Date(url.updated),
-      } satisfies Url
+      return dbToEntity(url)
     }
 
     return null
@@ -70,16 +74,7 @@ class UrlRepository {
 
     this._readonlyPool.release(conn)
 
-    return urls.map((u) => {
-      return {
-        id: u.id,
-        userId: u.user_id,
-        slug: u.slug,
-        address: u.url,
-        created: new Date(u.created),
-        updated: new Date(u.updated),
-      } satisfies Url
-    })
+    return urls.map((url) => dbToEntity(url))
   }
 }
 

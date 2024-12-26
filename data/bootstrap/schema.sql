@@ -2,7 +2,8 @@ drop table if exists users;
 
 create table users (
   id integer primary key,
-  user_name text,
+  github_username text,
+  github_email text,
   created numeric,
   updated numeric
 );

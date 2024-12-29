@@ -1,13 +1,10 @@
 import { CookieStore, sessionMiddleware } from "@jcs224/hono-sessions"
 import { Hono } from "hono"
-
 import { auth } from "./routes/auth.ts"
-import { Variables } from "./routes/variables.ts"
 import { authedApp } from "./routes/authed-app.tsx"
 import { core } from "./routes/core.tsx"
 
-const app = new Hono<{ Variables: Variables }>()
-
+const app = new Hono()
 const store = new CookieStore()
 
 app.use(

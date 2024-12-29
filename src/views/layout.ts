@@ -22,8 +22,8 @@ const Layout = (props: LayoutProps) =>
       <h1>Hello, ${props.user.username}</h1>
       <a href=${`/auth/logout`}>Log out</a>
     </header>
-    <section>
-    ${props.children}
+    <section id="view-root">
+      ${props.children}
     </section>
   </body>
 </html>

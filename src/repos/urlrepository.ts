@@ -18,8 +18,8 @@ interface Url {
   slug: string
   address: string
   views: number
-  created: Date
-  updated: Date
+  created: Temporal.Instant
+  updated: Temporal.Instant
 }
 
 function dbToEntity(url: DbUrl): Url {
@@ -29,8 +29,8 @@ function dbToEntity(url: DbUrl): Url {
     slug: url.slug,
     address: url.url,
     views: url.views || 0,
-    created: new Date(url.created),
-    updated: new Date(url.updated),
+    created: Temporal.Instant.fromEpochMilliseconds(url.created * 1000),
+    updated: Temporal.Instant.fromEpochMilliseconds(url.updated * 1000),
   }
 }
 

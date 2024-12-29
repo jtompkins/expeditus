@@ -14,8 +14,8 @@ interface Metric {
   id: number
   urlId: number
   ipAddress: string
-  created: Date
-  updated: Date
+  created: Temporal.Instant
+  updated: Temporal.Instant
 }
 
 const dbToEntity = (metric: DbMetric): Metric => {
@@ -23,8 +23,8 @@ const dbToEntity = (metric: DbMetric): Metric => {
     id: metric.id,
     urlId: metric.url_id,
     ipAddress: metric.ip_address,
-    created: new Date(metric.created),
-    updated: new Date(metric.updated),
+    created: Temporal.Instant.fromEpochMilliseconds(metric.created * 1000),
+    updated: Temporal.Instant.fromEpochMilliseconds(metric.updated * 1000),
   }
 }
 

@@ -14,8 +14,8 @@ interface User {
   id: number
   username: string
   email: string
-  created: Date
-  updated: Date
+  created: Temporal.Instant
+  updated: Temporal.Instant
 }
 
 function dbUserToUser(user: DbUser): User {
@@ -23,8 +23,8 @@ function dbUserToUser(user: DbUser): User {
     id: user.id,
     username: user.github_username,
     email: user.github_email,
-    created: new Date(user.created),
-    updated: new Date(user.updated),
+    created: Temporal.Instant.fromEpochMilliseconds(user.created * 1000),
+    updated: Temporal.Instant.fromEpochMilliseconds(user.updated * 1000),
   }
 }
 

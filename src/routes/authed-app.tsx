@@ -12,6 +12,20 @@ import { HomeView } from "../views/home.tsx"
 import { Layout } from "../views/layout.ts"
 import { UrlView } from "../views/url.tsx"
 import { MetricRepository } from "../repos/metricrepository.ts"
+import { UrlTable } from "../views/components/url-table.tsx"
+
+const metricRepo = new MetricRepository(
+  readonlyPool,
+  writeonlyPool,
+  statementCache,
+)
+
+const urlRepo = new UrlRepository(
+  readonlyPool,
+  writeonlyPool,
+  statementCache,
+  metricRepo,
+)
 
 const authedApp = new Hono<{ Variables: Env }>()
 
@@ -39,8 +53,6 @@ authedApp.use(async (c, next) => {
 authedApp.get("/", (c) => {
   const user = c.get("user")
 
-  const urlRepo = new UrlRepository(readonlyPool, writeonlyPool, statementCache)
-
   const urls = urlRepo.getByUser(user.id)
 
   return c.html(
@@ -54,13 +66,6 @@ authedApp.get("/urls/:slug", (c) => {
   const slug = c.req.param("slug")
   const user = c.get("user")
 
-  const urlRepo = new UrlRepository(readonlyPool, writeonlyPool, statementCache)
-  const metricRepo = new MetricRepository(
-    readonlyPool,
-    writeonlyPool,
-    statementCache,
-  )
-
   const url = urlRepo.getBySlug(slug)
 
   if (!url) {
@@ -73,6 +78,23 @@ authedApp.get("/urls/:slug", (c) => {
     <Layout title={`Expeditus | ${slug}`} user={user}>
       <UrlView url={url} metrics={metrics} />
     </Layout>,
+  )
+})
+
+authedApp.delete("/urls/:slug", (c) => {
+  const user = c.get("user")
+  const slug = c.req.param("slug")
+
+  const url = urlRepo.getBySlug(slug)
+
+  if (url) {
+    urlRepo.deleteById(url.id)
+  }
+
+  const urls = urlRepo.getByUser(user.id)
+
+  return c.html(
+    <UrlTable urls={urls} />,
   )
 })
 

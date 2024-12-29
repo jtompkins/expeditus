@@ -1,44 +1,13 @@
 import { FC } from "hono/jsx"
 import { Url } from "../repos/urlrepository.ts"
+import { UrlTable } from "./components/url-table.tsx"
 
 interface HomeProps {
   urls: Url[]
 }
 
 const HomeView: FC<HomeProps> = (props: HomeProps) => {
-  return (
-    <table>
-      <thead>
-        <tr>
-          <th>Slug</th>
-          <th>Address</th>
-          <th>Views</th>
-          <th>Created</th>
-        </tr>
-      </thead>
-      <tbody>
-        {props.urls.map((u) => {
-          return (
-            <tr>
-              <td>
-                <a href={`/app/urls/${u.slug}`}>{u.slug}</a>
-              </td>
-              <td>
-                <a href={u.address}>{u.address}</a>
-              </td>
-              <td>{u.views}</td>
-              <td>
-                {u.created.toLocaleString("en-US", {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                })}
-              </td>
-            </tr>
-          )
-        })}
-      </tbody>
-    </table>
-  )
+  return <UrlTable urls={props.urls} />
 }
 
 export { HomeView }

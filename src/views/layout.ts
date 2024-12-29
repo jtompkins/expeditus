@@ -15,12 +15,13 @@ const Layout = (props: LayoutProps) =>
   <title>${props.title || "Expeditus"}</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="">
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
   
   <body>
     <header>
       <h1>Hello, ${props.user.username}</h1>
       <a href=${`/auth/logout`}>Log out</a>
-</header>
+    </header>
     <section>
     ${props.children}
     </section>

@@ -6,10 +6,15 @@ import {
   statementCache,
   writeonlyPool,
 } from "../db/connections.ts"
+import { Login } from "../views/login.tsx"
 
-const shortener = new Hono<{ Variables: Variables }>()
+const core = new Hono<{ Variables: Variables }>()
 
-shortener.get("/:slug", (c) => {
+core.get("/", (c) => {
+  return c.html(<Login />)
+})
+
+core.get("/:slug", (c) => {
   const slug = c.req.param("slug")
 
   const urlRepo = new UrlRepository(readonlyPool, writeonlyPool, statementCache)
@@ -23,4 +28,4 @@ shortener.get("/:slug", (c) => {
   return c.notFound()
 })
 
-export { shortener }
+export { core }

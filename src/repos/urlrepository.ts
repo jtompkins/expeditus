@@ -1,6 +1,7 @@
 import { Database, Statement } from "@db/sqlite"
 import { DbConnectionPool } from "../db/dbconnectionpool.ts"
 import { StatementCache } from "../db/statementcache.ts"
+import { MetricRepository } from "./metricrepository.ts"
 
 interface DbUrl {
   id: number
@@ -39,14 +40,18 @@ class UrlRepository {
   private readonly _writeonlyPool: DbConnectionPool<Database>
   private readonly _cache: StatementCache<Database, Statement>
 
+  private readonly _metricRepo: MetricRepository
+
   constructor(
     readonlyPool: DbConnectionPool<Database>,
     writeonlyPool: DbConnectionPool<Database>,
     cache: StatementCache<Database, Statement>,
+    metricRepo: MetricRepository,
   ) {
     this._readonlyPool = readonlyPool
     this._writeonlyPool = writeonlyPool
     this._cache = cache
+    this._metricRepo = metricRepo
   }
 
   getBySlug(slug: string): Url | null {
@@ -78,6 +83,35 @@ class UrlRepository {
     this._readonlyPool.release(conn)
 
     return urls.map((url) => dbToEntity(url))
+  }
+
+  deleteById(id: number): boolean {
+    const success = this._metricRepo.deleteByUrlId(id)
+
+    if (!success) {
+      return false
+    }
+
+    const roConn = this._readonlyPool.borrow()
+    const woConn = this._writeonlyPool.borrow()
+
+    const stmt = this._cache.prepareAndCache(
+      woConn,
+      "delete from urls where id = ?",
+    )
+
+    const changesStatement = this._cache.prepareAndCache(
+      roConn,
+      "select changes() as changes",
+    )
+
+    stmt.run(id)
+    const res = changesStatement.get<{ changes: number }>()!
+
+    this._readonlyPool.release(roConn)
+    this._writeonlyPool.release(woConn)
+
+    return res.changes > 0
   }
 }
 

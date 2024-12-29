@@ -1,5 +1,5 @@
 import { Hono } from "hono"
-import { Variables } from "./variables.ts"
+import { Env } from "./env.ts"
 import { UserRepository } from "../repos/userrepository.ts"
 import {
   readonlyPool,
@@ -13,7 +13,7 @@ import { Layout } from "../views/layout.ts"
 import { UrlView } from "../views/url.tsx"
 import { MetricRepository } from "../repos/metricrepository.ts"
 
-const authedApp = new Hono<{ Variables: Variables }>()
+const authedApp = new Hono<{ Variables: Env }>()
 
 authedApp.use(async (c, next) => {
   const session = c.get("session") as Session
@@ -44,11 +44,9 @@ authedApp.get("/", (c) => {
   const urls = urlRepo.getByUser(user.id)
 
   return c.html(
-    <>
-      <Layout title={"Expeditus | Home"} user={user}>
-        <HomeView urls={urls} />
-      </Layout>
-    </>,
+    <Layout title={"Expeditus | Home"} user={user}>
+      <HomeView urls={urls} />
+    </Layout>,
   )
 })
 
@@ -72,11 +70,9 @@ authedApp.get("/urls/:slug", (c) => {
   const metrics = metricRepo.getByUrlId(url.id)
 
   return c.html(
-    <>
-      <Layout title={`Expeditus | ${slug}`} user={user}>
-        <UrlView url={url} metrics={metrics} />
-      </Layout>
-    </>,
+    <Layout title={`Expeditus | ${slug}`} user={user}>
+      <UrlView url={url} metrics={metrics} />
+    </Layout>,
   )
 })
 

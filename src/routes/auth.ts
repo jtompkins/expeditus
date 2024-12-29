@@ -1,6 +1,6 @@
 import { Hono } from "hono"
 import { githubAuth } from "@hono/oauth-providers/github"
-import { Variables } from "./variables.ts"
+import { Env } from "./env.ts"
 import { Session } from "@jcs224/hono-sessions"
 import { UserRepository } from "../repos/userrepository.ts"
 import {
@@ -9,7 +9,7 @@ import {
   writeonlyPool,
 } from "../db/connections.ts"
 
-const auth = new Hono<{ Variables: Variables }>()
+const auth = new Hono<{ Variables: Env }>()
 
 auth.use(
   "/callback/github",

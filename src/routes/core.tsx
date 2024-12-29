@@ -1,5 +1,5 @@
 import { Hono } from "hono"
-import { Variables } from "./variables.ts"
+import { Env } from "./env.ts"
 import { UrlRepository } from "../repos/urlrepository.ts"
 import {
   readonlyPool,
@@ -8,7 +8,7 @@ import {
 } from "../db/connections.ts"
 import { Login } from "../views/login.tsx"
 
-const core = new Hono<{ Variables: Variables }>()
+const core = new Hono<{ Variables: Env }>()
 
 core.get("/", (c) => {
   return c.html(<Login />)

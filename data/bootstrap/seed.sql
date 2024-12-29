@@ -12,13 +12,13 @@ insert into urls (id, user_id, url, slug, created, updated) values (5, 1, 'http:
 
 delete from metrics;
 
-insert into metrics (id, url_id, ip_address, created, updated) values (1, 1, '192.168.0.1', unixepoch(), unixepoch());
-insert into metrics (id, url_id, ip_address, created, updated) values (2, 1, '1.1.1.1', unixepoch(), unixepoch());
-insert into metrics (id, url_id, ip_address, created, updated) values (3, 2, '192.168.0.2', unixepoch(), unixepoch());
-insert into metrics (id, url_id, ip_address, created, updated) values (4, 2, '1.1.1.2', unixepoch(), unixepoch());
-insert into metrics (id, url_id, ip_address, created, updated) values (5, 3, '192.168.0.3', unixepoch(), unixepoch());
-insert into metrics (id, url_id, ip_address, created, updated) values (6, 3, '1.1.1.3', unixepoch(), unixepoch());
-insert into metrics (id, url_id, ip_address, created, updated) values (7, 4, '192.168.0.4', unixepoch(), unixepoch());
-insert into metrics (id, url_id, ip_address, created, updated) values (8, 4, '1.1.1.4', unixepoch(), unixepoch());
-insert into metrics (id, url_id, ip_address, created, updated) values (9, 5, '192.168.0.5', unixepoch(), unixepoch());
-insert into metrics (id, url_id, ip_address, created, updated) values (10, 5, '1.1.1.5', unixepoch(), unixepoch());
+insert into metrics (id, url_id, ip_address, referrer, created, updated) values (1, 1, '192.168.0.1', 'example.com', unixepoch(), unixepoch());
+insert into metrics (id, url_id, ip_address, referrer, created, updated) values (2, 1, '1.1.1.1', 'example.com', unixepoch(), unixepoch());
+insert into metrics (id, url_id, ip_address, referrer, created, updated) values (3, 2, '192.168.0.2', 'example.com', unixepoch(), unixepoch());
+insert into metrics (id, url_id, ip_address, referrer, created, updated) values (4, 2, '1.1.1.2', 'example.com', unixepoch(), unixepoch());
+insert into metrics (id, url_id, ip_address, referrer, created, updated) values (5, 3, '192.168.0.3', 'example.com', unixepoch(), unixepoch());
+insert into metrics (id, url_id, ip_address, referrer, created, updated) values (6, 3, '1.1.1.3', 'example.com', unixepoch(), unixepoch());
+insert into metrics (id, url_id, ip_address, referrer, created, updated) values (7, 4, '192.168.0.4', 'example.com', unixepoch(), unixepoch());
+insert into metrics (id, url_id, ip_address, referrer, created, updated) values (8, 4, '1.1.1.4', 'example.com', unixepoch(), unixepoch());
+insert into metrics (id, url_id, ip_address, referrer, created, updated) values (9, 5, '192.168.0.5', 'example.com', unixepoch(), unixepoch());
+insert into metrics (id, url_id, ip_address, referrer, created, updated) values (10, 5, '1.1.1.5', 'example.com', unixepoch(), unixepoch());

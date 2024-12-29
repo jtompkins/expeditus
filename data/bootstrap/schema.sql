@@ -26,6 +26,7 @@ create table metrics (
   id integer primary key,
   url_id integer,
   ip_address text,
+  referrer text,
   created numeric,
   updated numeric,
   foreign key (url_id) references urls(id)

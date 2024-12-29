@@ -1,6 +1,6 @@
 delete from users;
 
-insert into users (id, github_username, github_email, created, updated) values (1, 'testuser', 'test@example.com', unixepoch(), unixepoch());
+insert into users (id, github_username, github_email, created, updated) values (1, 'jtompkins', 'me@joshtompkins.codes', unixepoch(), unixepoch());
 
 delete from urls;
 

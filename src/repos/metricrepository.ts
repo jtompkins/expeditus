@@ -6,6 +6,7 @@ interface DbMetric {
   id: number
   url_id: number
   ip_address: string
+  referrer?: string
   created: number
   updated: number
 }
@@ -14,6 +15,7 @@ interface Metric {
   id: number
   urlId: number
   ipAddress: string
+  referrer?: string
   created: Temporal.Instant
   updated: Temporal.Instant
 }
@@ -23,6 +25,7 @@ const dbToEntity = (metric: DbMetric): Metric => {
     id: metric.id,
     urlId: metric.url_id,
     ipAddress: metric.ip_address,
+    referrer: metric.referrer,
     created: Temporal.Instant.fromEpochMilliseconds(metric.created * 1000),
     updated: Temporal.Instant.fromEpochMilliseconds(metric.updated * 1000),
   }
@@ -41,6 +44,24 @@ class MetricRepository {
     this._readonlyPool = readonlyPool
     this._writeonlyPool = writeonlyPool
     this._cache = cache
+  }
+
+  getById(id: number): Metric | null {
+    const conn = this._readonlyPool.borrow()
+    const stmt = this._cache.prepareAndCache(
+      conn,
+      "select * from metrics where id = ?",
+    )
+
+    const metric = stmt.get<DbMetric>(id)
+
+    this._readonlyPool.release(conn)
+
+    if (metric) {
+      return dbToEntity(metric)
+    }
+
+    return null
   }
 
   getViewsByUrlId(urlId: number): number {
@@ -69,6 +90,28 @@ class MetricRepository {
     this._readonlyPool.release(conn)
 
     return metrics.map((m) => dbToEntity(m))
+  }
+
+  createMetric(urlId: number, ipAddress?: string, referrer?: string): Metric {
+    const roConn = this._readonlyPool.borrow()
+    const woConn = this._writeonlyPool.borrow()
+
+    const stmt = this._cache.prepareAndCache(
+      woConn,
+      "insert into metrics (url_id, ip_address, referrer, created, updated) values (?, ?, ?, unixepoch(), unixepoch());",
+    )
+    const rowIdStmt = this._cache.prepareAndCache(
+      roConn,
+      "select last_insert_rowid() as metric_id",
+    )
+
+    stmt.run(urlId, ipAddress ?? null, referrer ?? null)
+    const res = rowIdStmt.get<{ metric_id: number }>()!
+
+    this._readonlyPool.release(roConn)
+    this._writeonlyPool.release(woConn)
+
+    return this.getById(res.metric_id)!
   }
 
   deleteByUrlId(urlId: number): boolean {

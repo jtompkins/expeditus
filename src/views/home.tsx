@@ -14,7 +14,6 @@ const HomeView: FC<HomeProps> = (props: HomeProps) => {
           <th>Address</th>
           <th>Views</th>
           <th>Created</th>
-          <th>Updated</th>
         </tr>
       </thead>
       <tbody>
@@ -28,8 +27,12 @@ const HomeView: FC<HomeProps> = (props: HomeProps) => {
                 <a href={u.address}>{u.address}</a>
               </td>
               <td>{u.views}</td>
-              <td>{u.created}</td>
-              <td>{u.updated}</td>
+              <td>
+                {u.created.toLocaleString("en-US", {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                })}
+              </td>
             </tr>
           )
         })}

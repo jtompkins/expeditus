@@ -7,6 +7,20 @@ import {
   writeonlyPool,
 } from "../db/connections.ts"
 import { Login } from "../views/login.tsx"
+import { MetricRepository } from "../repos/metricrepository.ts"
+
+const metricRepo = new MetricRepository(
+  readonlyPool,
+  writeonlyPool,
+  statementCache,
+)
+
+const urlRepo = new UrlRepository(
+  readonlyPool,
+  writeonlyPool,
+  statementCache,
+  metricRepo,
+)
 
 const core = new Hono<{ Variables: Env }>()
 
@@ -16,8 +30,6 @@ core.get("/", (c) => {
 
 core.get("/:slug", (c) => {
   const slug = c.req.param("slug")
-
-  const urlRepo = new UrlRepository(readonlyPool, writeonlyPool, statementCache)
 
   const url = urlRepo.getBySlug(slug)
 

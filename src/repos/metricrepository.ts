@@ -70,6 +70,29 @@ class MetricRepository {
 
     return metrics.map((m) => dbToEntity(m))
   }
+
+  deleteByUrlId(urlId: number): boolean {
+    const roConn = this._readonlyPool.borrow()
+    const woConn = this._writeonlyPool.borrow()
+
+    const stmt = this._cache.prepareAndCache(
+      woConn,
+      "delete from metrics where url_id = ?",
+    )
+
+    const changesStatement = this._cache.prepareAndCache(
+      roConn,
+      "select changes() as changes",
+    )
+
+    stmt.run(urlId)
+    const res = changesStatement.get<{ changes: number }>()!
+
+    this._readonlyPool.release(roConn)
+    this._writeonlyPool.release(woConn)
+
+    return res.changes > 0
+  }
 }
 
 export type { Metric }

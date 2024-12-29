@@ -2,12 +2,30 @@ import { Database, Statement } from "@db/sqlite"
 import { DbConnectionPool } from "../db/dbconnectionpool.ts"
 import { StatementCache } from "../db/statementcache.ts"
 
-interface Metric {
+interface DbMetric {
   id: number
   url_id: number
   ip_address: string
+  created: number
+  updated: number
+}
+
+interface Metric {
+  id: number
+  urlId: number
+  ipAddress: string
   created: Date
   updated: Date
+}
+
+const dbToEntity = (metric: DbMetric): Metric => {
+  return {
+    id: metric.id,
+    urlId: metric.url_id,
+    ipAddress: metric.ip_address,
+    created: new Date(metric.created),
+    updated: new Date(metric.updated),
+  }
 }
 
 class MetricRepository {
@@ -25,6 +43,20 @@ class MetricRepository {
     this._cache = cache
   }
 
+  getViewsByUrlId(urlId: number): number {
+    const conn = this._readonlyPool.borrow()
+    const stmt = this._cache.prepareAndCache(
+      conn,
+      "select count(*) from metrics where url_id = ?",
+    )
+
+    const views = stmt.value<[number]>(urlId)
+
+    this._readonlyPool.release(conn)
+
+    return views ? views[0] : 0
+  }
+
   getByUrlId(urlId: number): Metric[] {
     const conn = this._readonlyPool.borrow()
     const stmt = this._cache.prepareAndCache(
@@ -32,11 +64,11 @@ class MetricRepository {
       "select * from metrics where url_id = ?",
     )
 
-    const metrics = stmt.all<Metric>(urlId)
+    const metrics = stmt.all<DbMetric>(urlId)
 
     this._readonlyPool.release(conn)
 
-    return metrics
+    return metrics.map((m) => dbToEntity(m))
   }
 }
 

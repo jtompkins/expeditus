@@ -1,4 +1,5 @@
 import { Hono } from "hono"
+import { getConnInfo } from "hono/deno"
 import { Env } from "./env.ts"
 import { UrlRepository } from "../repos/urlrepository.ts"
 import {
@@ -34,6 +35,10 @@ core.get("/:slug", (c) => {
   const url = urlRepo.getBySlug(slug)
 
   if (url) {
+    const info = getConnInfo(c)
+
+    metricRepo.createMetric(url.id, info.remote.address, c.req.raw.referrer)
+
     return c.redirect(url.address)
   }
 

@@ -80,18 +80,23 @@ class UserRepository {
   }
 
   createUser(username: string, email: string): User {
-    const conn = this._writeonlyPool.borrow()
+    const roConn = this._readonlyPool.borrow()
+    const woConn = this._writeonlyPool.borrow()
+
     const stmt = this._cache.prepareAndCache(
-      conn,
+      woConn,
       "insert into users (github_username, github_email, created, updated) values (?, ?, unixepoch(), unixepoch());",
     )
     const rowIdStmt = this._cache.prepareAndCache(
-      conn,
+      roConn,
       "select last_insert_rowid() as user_id",
     )
 
     stmt.run(username, email)
     const res = rowIdStmt.get<{ user_id: number }>()!
+
+    this._readonlyPool.release(roConn)
+    this._writeonlyPool.release(woConn)
 
     return this.getById(res.user_id)!
   }

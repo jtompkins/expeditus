@@ -17,5 +17,9 @@
   },
   "fmt": {
     "semiColons": false
+  },
+  "compilerOptions": {
+    "jsx": "precompile",
+    "jsxImportSource": "hono/jsx"
   }
 }

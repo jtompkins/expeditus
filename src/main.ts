@@ -1,11 +1,10 @@
 import { CookieStore, sessionMiddleware } from "@jcs224/hono-sessions"
 import { Hono } from "hono"
-import { html } from "hono/html"
 
 import { auth } from "./routes/auth.ts"
 import { Variables } from "./routes/variables.ts"
-import { authedApp } from "./routes/authed-app.ts"
-import { shortener } from "./routes/shortener.ts"
+import { authedApp } from "./routes/authed-app.tsx"
+import { core } from "./routes/core.tsx"
 
 const app = new Hono<{ Variables: Variables }>()
 
@@ -27,27 +26,6 @@ app.use(
 
 app.route("/auth", auth)
 app.route("/app", authedApp)
-app.route("/", shortener)
-
-app.get("/", (c) => {
-  return c.html(
-    html`
-    <html>
-      <head>
-      </head>
-      <body>
-        <p>
-          Well, hello there!
-        </p>
-        <p>
-          We're going to now talk to the GitHub API. Ready?
-          <a href="https://github.com/login/oauth/authorize?scope=user:email&client_id=${
-      Deno.env.get("GITHUB_ID")
-    }">Click here</a> to begin!
-        </p>
-      </body>
-    </html>`,
-  )
-})
+app.route("/", core)
 
 Deno.serve(app.fetch)

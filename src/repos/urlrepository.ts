@@ -7,6 +7,7 @@ interface DbUrl {
   user_id: number
   url: string
   slug: string
+  views?: number
   created: number
   updated: number
 }
@@ -16,6 +17,7 @@ interface Url {
   userId: number
   slug: string
   address: string
+  views: number
   created: Date
   updated: Date
 }
@@ -26,6 +28,7 @@ function dbToEntity(url: DbUrl): Url {
     userId: url.user_id,
     slug: url.slug,
     address: url.url,
+    views: url.views || 0,
     created: new Date(url.created),
     updated: new Date(url.updated),
   }
@@ -67,7 +70,7 @@ class UrlRepository {
     const conn = this._readonlyPool.borrow()
     const stmt = this._cache.prepareAndCache(
       conn,
-      "select * from urls where user_id = ?",
+      "select u.*, count(m.id) as views from urls as u join metrics as m on u.id = m.url_id where u.user_id = ? group by m.url_id",
     )
 
     const urls = stmt.all<DbUrl>(userId)

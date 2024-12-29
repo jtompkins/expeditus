@@ -81,6 +81,35 @@ authedApp.get("/urls/:slug", (c) => {
   )
 })
 
+authedApp.put("/urls", async (c) => {
+  const user = c.get("user")
+
+  const form = await c.req.formData()
+
+  const slug = form.get("slug")?.toString()
+  const address = form.get("address")?.toString()
+
+  let error = ""
+
+  if (slug && address) {
+    const existingSlug = urlRepo.getBySlug(slug)
+
+    if (existingSlug) {
+      error = `${slug} is not available`
+    } else {
+      urlRepo.createUrl(user.id, slug, address)
+    }
+  } else {
+    error = "Slug and address are required"
+  }
+
+  const urls = urlRepo.getByUser(user.id)
+
+  return c.html(
+    <HomeView urls={urls} error={error} />,
+  )
+})
+
 authedApp.delete("/urls/:slug", (c) => {
   const user = c.get("user")
   const slug = c.req.param("slug")

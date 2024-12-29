@@ -54,6 +54,23 @@ class UrlRepository {
     this._metricRepo = metricRepo
   }
 
+  getById(id: number): Url | null {
+    const conn = this._readonlyPool.borrow()
+    const stmt = this._cache.prepareAndCache(
+      conn,
+      "select * from urls where id = ?",
+    )
+    const url = stmt.get<DbUrl>(id)
+
+    this._readonlyPool.release(conn)
+
+    if (url) {
+      return dbToEntity(url)
+    }
+
+    return null
+  }
+
   getBySlug(slug: string): Url | null {
     const conn = this._readonlyPool.borrow()
     const stmt = this._cache.prepareAndCache(
@@ -75,7 +92,7 @@ class UrlRepository {
     const conn = this._readonlyPool.borrow()
     const stmt = this._cache.prepareAndCache(
       conn,
-      "select u.*, count(m.id) as views from urls as u join metrics as m on u.id = m.url_id where u.user_id = ? group by m.url_id",
+      "select urls.*, count(metrics.id) as views from urls left join metrics on urls.id = metrics.url_id where user_id = ? group by urls.id order by slug",
     )
 
     const urls = stmt.all<DbUrl>(userId)
@@ -83,6 +100,28 @@ class UrlRepository {
     this._readonlyPool.release(conn)
 
     return urls.map((url) => dbToEntity(url))
+  }
+
+  createUrl(userId: number, slug: string, address: string): Url {
+    const roConn = this._readonlyPool.borrow()
+    const woConn = this._writeonlyPool.borrow()
+
+    const stmt = this._cache.prepareAndCache(
+      woConn,
+      "insert into urls (user_id, url, slug, created, updated) values (?, ?, ?, unixepoch(), unixepoch());",
+    )
+    const rowIdStmt = this._cache.prepareAndCache(
+      roConn,
+      "select last_insert_rowid() as url_id",
+    )
+
+    stmt.run(userId, address, slug)
+    const res = rowIdStmt.get<{ url_id: number }>()!
+
+    this._readonlyPool.release(roConn)
+    this._writeonlyPool.release(woConn)
+
+    return this.getById(res.url_id)!
   }
 
   deleteById(id: number): boolean {

@@ -1,6 +1,6 @@
 import { Database, Statement } from "@db/sqlite"
-import { DbConnectionPool } from "../db/dbconnectionpool.ts"
-import { StatementCache } from "../db/statementcache.ts"
+import { DbConnectionPool } from "../util/dbconnectionpool.ts"
+import { StatementCache } from "../util/statementcache.ts"
 
 interface DbMetric {
   id: number

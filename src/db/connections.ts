@@ -1,5 +1,5 @@
-import { DbConnectionPool } from "./dbconnectionpool.ts"
-import { StatementCache } from "./statementcache.ts"
+import { DbConnectionPool } from "../util/dbconnectionpool.ts"
+import { StatementCache } from "../util/statementcache.ts"
 import { Database, Statement } from "@db/sqlite"
 
 const DATABASE_URL = Deno.env.get("DATABASE_URL")!

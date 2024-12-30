@@ -1,6 +1,6 @@
-import { DbConnectionPool } from "../db/dbconnectionpool.ts"
+import { DbConnectionPool } from "../util/dbconnectionpool.ts"
 import { Database, Statement } from "@db/sqlite"
-import { StatementCache } from "../db/statementcache.ts"
+import { StatementCache } from "../util/statementcache.ts"
 
 interface DbUser {
   id: number

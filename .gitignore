@@ -129,7 +129,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-.vscode/
-node_modules/
-.env
+# SQLite Local files
 *.db

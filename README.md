@@ -81,3 +81,12 @@ A few easy steps:
 - To watch for changes and restart automatically, run `deno task dev:watch`
 - To run tests, run `deno test`. Right now, there are only a few tests for the
   DB infrastructure.
+
+## Todos
+
+- [ ] IoC Container for dependencies?
+- [ ] Move reusable components into their own namespace
+- [ ] Tailwind or other CSS styling
+- [ ] UI improvements
+- [ ] Redirect to app from root route if already logged in
+- [ ]

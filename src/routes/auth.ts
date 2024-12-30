@@ -37,7 +37,7 @@ auth.get("/callback/github", (c) => {
   }
 
   session.set("token", token)
-  session.set("user-email", existingUser.email)
+  session.set("userId", existingUser.id)
 
   return c.redirect("/app")
 })

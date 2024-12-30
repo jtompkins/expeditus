@@ -31,7 +31,7 @@ const authedApp = new Hono<{ Variables: Env }>()
 
 authedApp.use(async (c, next) => {
   const session = c.get("session") as Session
-  const email = session.get("user-email") as string
+  const userId = session.get("userId") as number
 
   const userRepo = new UserRepository(
     readonlyPool,
@@ -39,7 +39,7 @@ authedApp.use(async (c, next) => {
     statementCache,
   )
 
-  const user = userRepo.getByEmail(email)
+  const user = userRepo.getById(userId)
 
   if (!user) {
     return c.redirect("/")

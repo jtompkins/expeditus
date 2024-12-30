@@ -4,7 +4,7 @@ import { User } from "../repos/userrepository.ts"
 
 type SessionEnv = {
   "token": string
-  "user-email": string
+  "userId": number
 }
 
 type Env = {

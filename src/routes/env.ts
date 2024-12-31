@@ -1,18 +1,20 @@
 import { GitHubUser } from "@hono/oauth-providers/github"
 import { Session } from "@jcs224/hono-sessions"
 import { User } from "../repos/userrepository.ts"
+import { IoCContainer } from "../lib/ioc-container.ts"
 
-type SessionEnv = {
+type SessionVariables = {
   "token": string
   "userId": number
 }
 
-type Env = {
+type AppVariables = {
   "token": string
   "user-github": GitHubUser
   "user": User
-  "session": Session<SessionEnv>
+  "ioc": IoCContainer
+  "session": Session<SessionVariables>
   "session_key_rotation": boolean
 }
 
-export type { Env, SessionEnv }
+export type { AppVariables, SessionVariables }

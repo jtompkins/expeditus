@@ -36,4 +36,4 @@ app.route("/auth", auth)
 app.route("/app", authedApp)
 app.route("/", core)
 
-Deno.serve(app.fetch)
+Deno.serve({ port: 8080 }, app.fetch)

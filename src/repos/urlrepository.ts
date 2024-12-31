@@ -106,7 +106,7 @@ class UrlRepository {
 
     const stmt = this._cache.prepareAndCache(
       woConn,
-      "insert into urls (user_id, url, slug, created, updated) values (?, ?, ?, unixepoch(), unixepoch());",
+      "insert into urls (user_id, url, slug, views, created, updated) values (?, ?, ?, 0, unixepoch(), unixepoch());",
     )
     const rowIdStmt = this._cache.prepareAndCache(
       roConn,

@@ -1,6 +1,6 @@
 import { Database, Statement } from "@db/sqlite"
-import { DbConnectionPool } from "../util/dbconnectionpool.ts"
-import { StatementCache } from "../util/statementcache.ts"
+import { DbConnectionPool } from "../lib/dbconnectionpool.ts"
+import { StatementCache } from "../lib/statementcache.ts"
 import { MetricRepository } from "./metricrepository.ts"
 
 interface DbUrl {
@@ -140,7 +140,7 @@ class UrlRepository {
     )
 
     const changesStatement = this._cache.prepareAndCache(
-      roConn,
+      woConn,
       "select changes() as changes",
     )
 

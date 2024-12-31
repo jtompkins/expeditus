@@ -1,6 +1,6 @@
-import { DbConnectionPool } from "../util/dbconnectionpool.ts"
+import { DbConnectionPool } from "../lib/dbconnectionpool.ts"
 import { Database, Statement } from "@db/sqlite"
-import { StatementCache } from "../util/statementcache.ts"
+import { StatementCache } from "../lib/statementcache.ts"
 
 interface DbUser {
   id: number
@@ -88,7 +88,7 @@ class UserRepository {
       "insert into users (github_username, github_email, created, updated) values (?, ?, unixepoch(), unixepoch());",
     )
     const rowIdStmt = this._cache.prepareAndCache(
-      roConn,
+      woConn,
       "select last_insert_rowid() as user_id",
     )
 

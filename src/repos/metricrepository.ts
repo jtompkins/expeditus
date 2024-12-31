@@ -17,7 +17,6 @@ interface Metric {
   ipAddress: string
   referrer?: string
   created: Temporal.Instant
-  updated: Temporal.Instant
 }
 
 const dbToEntity = (metric: DbMetric): Metric => {
@@ -27,7 +26,6 @@ const dbToEntity = (metric: DbMetric): Metric => {
     ipAddress: metric.ip_address,
     referrer: metric.referrer,
     created: Temporal.Instant.fromEpochMilliseconds(metric.created * 1000),
-    updated: Temporal.Instant.fromEpochMilliseconds(metric.updated * 1000),
   }
 }
 
@@ -114,7 +112,7 @@ class MetricRepository {
     return this.getById(res.metric_id)!
   }
 
-  deleteByUrlId(urlId: number): boolean {
+  deleteByUrlId(urlId: number): number {
     const roConn = this._readonlyPool.borrow()
     const woConn = this._writeonlyPool.borrow()
 
@@ -134,7 +132,7 @@ class MetricRepository {
     this._readonlyPool.release(roConn)
     this._writeonlyPool.release(woConn)
 
-    return res.changes > 0
+    return res.changes
   }
 }
 

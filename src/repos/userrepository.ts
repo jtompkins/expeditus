@@ -15,7 +15,6 @@ interface User {
   username: string
   email: string
   created: Temporal.Instant
-  updated: Temporal.Instant
 }
 
 function dbUserToUser(user: DbUser): User {
@@ -24,7 +23,6 @@ function dbUserToUser(user: DbUser): User {
     username: user.github_username,
     email: user.github_email,
     created: Temporal.Instant.fromEpochMilliseconds(user.created * 1000),
-    updated: Temporal.Instant.fromEpochMilliseconds(user.updated * 1000),
   }
 }
 

@@ -8,7 +8,7 @@ interface DbUrl {
   user_id: number
   url: string
   slug: string
-  views?: number
+  views: number
   created: number
   updated: number
 }
@@ -20,7 +20,6 @@ interface Url {
   address: string
   views: number
   created: Temporal.Instant
-  updated: Temporal.Instant
 }
 
 function dbToEntity(url: DbUrl): Url {
@@ -29,9 +28,8 @@ function dbToEntity(url: DbUrl): Url {
     userId: url.user_id,
     slug: url.slug,
     address: url.url,
-    views: url.views || 0,
+    views: url.views,
     created: Temporal.Instant.fromEpochMilliseconds(url.created * 1000),
-    updated: Temporal.Instant.fromEpochMilliseconds(url.updated * 1000),
   }
 }
 
@@ -92,7 +90,7 @@ class UrlRepository {
     const conn = this._readonlyPool.borrow()
     const stmt = this._cache.prepareAndCache(
       conn,
-      "select urls.*, count(metrics.id) as views from urls left join metrics on urls.id = metrics.url_id where user_id = ? group by urls.id order by slug",
+      "select * from urls where user_id = ? order by slug",
     )
 
     const urls = stmt.all<DbUrl>(userId)
@@ -124,12 +122,31 @@ class UrlRepository {
     return this.getById(res.url_id)!
   }
 
-  deleteById(id: number): boolean {
-    const success = this._metricRepo.deleteByUrlId(id)
+  incrementViewsById(id: number, value: number = 1): boolean {
+    const roConn = this._readonlyPool.borrow()
+    const woConn = this._writeonlyPool.borrow()
 
-    if (!success) {
-      return false
-    }
+    const stmt = this._cache.prepareAndCache(
+      woConn,
+      "update urls set views = views + ? where id = ?",
+    )
+
+    const changesStatement = this._cache.prepareAndCache(
+      woConn,
+      "select changes() as changes",
+    )
+
+    stmt.run(id, value)
+    const res = changesStatement.get<{ changes: number }>()!
+
+    this._readonlyPool.release(roConn)
+    this._writeonlyPool.release(woConn)
+
+    return res.changes > 0
+  }
+
+  deleteById(id: number): boolean {
+    this._metricRepo.deleteByUrlId(id)
 
     const roConn = this._readonlyPool.borrow()
     const woConn = this._writeonlyPool.borrow()

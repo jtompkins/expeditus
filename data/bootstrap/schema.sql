@@ -15,6 +15,7 @@ create table urls (
   user_id integer,
   url text,
   slug text unique,
+  views numeric,
   created numeric,
   updated numeric,
   foreign key (user_id) references users(id)

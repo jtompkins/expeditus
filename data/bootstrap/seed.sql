@@ -4,11 +4,11 @@ insert into users (id, github_username, github_email, created, updated) values (
 
 delete from urls;
 
-insert into urls (id, user_id, url, slug, created, updated) values (1, 1, 'https://www.youtube.com/watch?v=XfELJU1mRMg', 'test', unixepoch(), unixepoch());
-insert into urls (id, user_id, url, slug, created, updated) values (2, 1, 'http://www.example2.com', 'test2', unixepoch(), unixepoch());
-insert into urls (id, user_id, url, slug, created, updated) values (3, 1, 'http://www.example3.com', 'test3', unixepoch(), unixepoch());
-insert into urls (id, user_id, url, slug, created, updated) values (4, 1, 'http://www.example4.com', 'test4', unixepoch(), unixepoch());
-insert into urls (id, user_id, url, slug, created, updated) values (5, 1, 'http://www.example5.com', 'test5', unixepoch(), unixepoch());
+insert into urls (id, user_id, url, slug, views, created, updated) values (1, 1, 'https://www.youtube.com/watch?v=XfELJU1mRMg', 'test', 2, unixepoch(), unixepoch());
+insert into urls (id, user_id, url, slug, views, created, updated) values (2, 1, 'http://www.example2.com', 'test2', 2, unixepoch(), unixepoch());
+insert into urls (id, user_id, url, slug, views, created, updated) values (3, 1, 'http://www.example3.com', 'test3', 2, unixepoch(), unixepoch());
+insert into urls (id, user_id, url, slug, views, created, updated) values (4, 1, 'http://www.example4.com', 'test4', 2, unixepoch(), unixepoch());
+insert into urls (id, user_id, url, slug, views, created, updated) values (5, 1, 'http://www.example5.com', 'test5', 2, unixepoch(), unixepoch());
 
 delete from metrics;
 

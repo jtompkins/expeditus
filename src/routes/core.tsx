@@ -8,6 +8,13 @@ import { AppVariables } from "./env.ts"
 const core = new Hono<{ Variables: AppVariables }>()
 
 core.get("/", (c) => {
+  const session = c.get("session")
+  const userId = session.get("userId")
+
+  if (userId) {
+    return c.redirect("/app")
+  }
+
   return c.html(<Login />)
 })
 

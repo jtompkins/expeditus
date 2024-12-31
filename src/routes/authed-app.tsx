@@ -1,4 +1,3 @@
-import { Session } from "@jcs224/hono-sessions"
 import { Hono } from "hono"
 import { MetricRepository } from "../repos/metricrepository.ts"
 import { UrlRepository } from "../repos/urlrepository.ts"
@@ -12,8 +11,12 @@ import { AppVariables } from "./env.ts"
 const authedApp = new Hono<{ Variables: AppVariables }>()
 
 authedApp.use(async (c, next) => {
-  const session = c.get("session") as Session
-  const userId = session.get("userId") as number
+  const session = c.get("session")
+  const userId = session.get("userId")
+
+  if (!userId) {
+    return c.redirect("/")
+  }
 
   const userRepo = c.get("ioc").get(UserRepository)
 

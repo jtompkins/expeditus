@@ -12,8 +12,14 @@ interface HomeProps {
 const HomeView: FC<HomeProps> = (props: HomeProps) => {
   return (
     <>
+      <h2>Add a new link</h2>
+
       <UrlEntry />
+
       {props.error && <Errors text={props.error!} />}
+
+      <h2>Your links</h2>
+
       <UrlTable urls={props.urls} />
     </>
   )

@@ -2,13 +2,16 @@ import { CookieStore, sessionMiddleware } from "@jcs224/hono-sessions"
 import { Hono } from "hono"
 import { auth } from "./routes/auth.ts"
 import { authedApp } from "./routes/authed-app.tsx"
-import { core } from "./routes/core.tsx"
+import { core } from "./routes/core.ts"
 import { iocContainer } from "./util/ioc.ts"
 import { AppVariables } from "./routes/env.ts"
+import { serveStatic } from "hono/deno"
 
 const store = new CookieStore()
 
 const app = new Hono<{ Variables: AppVariables }>()
+
+app.use("/static/*", serveStatic({ root: "./src/" }))
 
 app.use(
   "*",

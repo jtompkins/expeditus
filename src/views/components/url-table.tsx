@@ -6,40 +6,42 @@ interface UrlTableProps {
 }
 
 const UrlTable: FC<UrlTableProps> = (props: UrlTableProps) => {
+  const dateFormatter = new Intl.DateTimeFormat("en-US", {
+    dateStyle: "short",
+    timeStyle: "short",
+    timeZone: "UTC",
+  })
+
   return (
     <table id="url-table">
       <thead>
         <tr>
-          <th>Slug</th>
+          <th>Short Code</th>
           <th>Address</th>
-          <th>Views</th>
-          <th>Created</th>
-          <th>Actions</th>
+          <th class="views">Views</th>
+          <th class="created">Created</th>
+          <th class="action"></th>
         </tr>
       </thead>
       <tbody>
         {props.urls.map((u) => {
           return (
             <tr>
-              <td>
-                <a href={`/app/urls/${u.slug}`}>{u.slug}</a>
-              </td>
+              <th>
+                {u.slug}
+              </th>
               <td>
                 <a href={u.address}>{u.address}</a>
               </td>
-              <td>{u.views}</td>
-              <td>
-                {u.created.toLocaleString("en-US", {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                })}
+              <td class="views">{u.views}</td>
+              <td class="created">
+                {dateFormatter.format(u.created.toZonedDateTimeISO("UTC"))}
               </td>
-              <td>
+              <td class="action">
                 <button
                   hx-delete={`/app/urls/${u.slug}`}
                   hx-target="#url-table"
                   hx-swap="outerHTML"
-                  href="#"
                 >
                   Delete
                 </button>

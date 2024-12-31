@@ -1,11 +1,9 @@
 import { Hono } from "hono"
-import { MetricRepository } from "../repos/metricrepository.ts"
 import { UrlRepository } from "../repos/urlrepository.ts"
 import { UserRepository } from "../repos/userrepository.ts"
 import { UrlTable } from "../views/components/url-table.tsx"
 import { HomeView } from "../views/home.tsx"
 import { Layout } from "../views/layout.ts"
-import { UrlView } from "../views/url.tsx"
 import { AppVariables } from "./env.ts"
 
 const authedApp = new Hono<{ Variables: AppVariables }>()
@@ -38,30 +36,8 @@ authedApp.get("/", (c) => {
   const urls = urlRepo.getByUser(user.id)
 
   return c.html(
-    <Layout title={"Expeditus | Home"} user={user}>
+    <Layout title={"Expeditus | Home"} user={user} styles={["app.css"]}>
       <HomeView urls={urls} />
-    </Layout>,
-  )
-})
-
-authedApp.get("/urls/:slug", (c) => {
-  const urlRepo = c.get("ioc").get(UrlRepository)
-  const metricRepo = c.get("ioc").get(MetricRepository)
-
-  const slug = c.req.param("slug")
-  const user = c.get("user")
-
-  const url = urlRepo.getBySlug(slug)
-
-  if (!url) {
-    return c.redirect("/app")
-  }
-
-  const metrics = metricRepo.getByUrlId(url.id)
-
-  return c.html(
-    <Layout title={`Expeditus | ${slug}`} user={user}>
-      <UrlView url={url} metrics={metrics} />
     </Layout>,
   )
 })
@@ -81,12 +57,13 @@ authedApp.put("/urls", async (c) => {
     const existingSlug = urlRepo.getBySlug(slug)
 
     if (existingSlug) {
-      error = `${slug} is not available`
+      error =
+        `That short code (${slug}) is already in use. You have to pick something else.`
     } else {
       urlRepo.createUrl(user.id, slug, address)
     }
   } else {
-    error = "Slug and address are required"
+    error = "You forgot to fill out the form."
   }
 
   const urls = urlRepo.getByUser(user.id)

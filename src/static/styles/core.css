@@ -1,0 +1,127 @@
+@import 'reset.css';
+
+@import url('https://fonts.googleapis.com/css2?family=Doto:wght,ROND@100..900,100&family=Sono:wght@200..800&display=swap');
+
+:root {
+  --background: #dddddd;
+  --background-highlight: #cccccc;
+
+  --divider: #cccccc;
+  --dark-divider: #999999;
+
+  --content-background: white;
+  --reverse-content-background: black;
+
+  --highlight: darkred;
+
+  --text: black;
+  --reverse-text: white;
+
+  --bright-text: #666666;
+
+  --standard-drop-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  --extra-light: 200;
+  --light: 300;
+  --regular: 400;
+  --medium: 500;
+  --semi-bold: 600;
+  --bold: 700;
+  --extra-bold: 800;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  background-color: var(--background);
+
+  font-family: "Sono", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "MONO" 1;
+}
+
+h1 {
+  font-family: "Doto", serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+  font-variation-settings:
+    "ROND" 100;
+
+  .highlight {
+    color: var(--highlight);
+  }
+}
+
+h2 {
+  margin-top: 20px;
+
+  font-family: "Doto", serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+  font-variation-settings:
+    "ROND" 100;
+}
+
+#logo {
+  width: 90%;
+  margin-top: 20px;
+
+  font-family: "Doto", serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+  font-variation-settings:
+    "ROND" 100;
+}
+
+#page-root {
+  display: flex;
+  flex-direction: column;
+
+  width: 90%;
+  background-color: var(--content-background);
+
+  margin-top: 20px;
+  box-shadow: var(--standard-drop-shadow);
+  border-color: var(--background-highlight);
+  border-radius: 10px;
+
+  padding: 20px 30px 20px 30px;
+}
+
+#page-header {
+  display: flex;
+  align-items: center;
+
+  h1 {
+    flex-grow: 1;
+  }
+}
+
+#logout-btn {
+  display: block;
+  justify-self: flex-end;
+
+  color: var(--reverse-text);
+  background-color: var(--reverse-content-background);
+  font-weight: var(--semi-bold);
+  text-transform: uppercase;
+  text-decoration: none;
+
+  border-radius: 4px;
+  padding: 4px 12px;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--highlight);
+  }
+}

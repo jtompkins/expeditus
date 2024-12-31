@@ -1,43 +1,21 @@
-import { Hono } from "hono"
-import { Env } from "./env.ts"
-import { UserRepository } from "../repos/userrepository.ts"
-import {
-  readonlyPool,
-  statementCache,
-  writeonlyPool,
-} from "../db/connections.ts"
 import { Session } from "@jcs224/hono-sessions"
+import { Hono } from "hono"
+import { MetricRepository } from "../repos/metricrepository.ts"
 import { UrlRepository } from "../repos/urlrepository.ts"
+import { UserRepository } from "../repos/userrepository.ts"
+import { UrlTable } from "../views/components/url-table.tsx"
 import { HomeView } from "../views/home.tsx"
 import { Layout } from "../views/layout.ts"
 import { UrlView } from "../views/url.tsx"
-import { MetricRepository } from "../repos/metricrepository.ts"
-import { UrlTable } from "../views/components/url-table.tsx"
+import { AppVariables } from "./env.ts"
 
-const metricRepo = new MetricRepository(
-  readonlyPool,
-  writeonlyPool,
-  statementCache,
-)
-
-const urlRepo = new UrlRepository(
-  readonlyPool,
-  writeonlyPool,
-  statementCache,
-  metricRepo,
-)
-
-const authedApp = new Hono<{ Variables: Env }>()
+const authedApp = new Hono<{ Variables: AppVariables }>()
 
 authedApp.use(async (c, next) => {
   const session = c.get("session") as Session
   const userId = session.get("userId") as number
 
-  const userRepo = new UserRepository(
-    readonlyPool,
-    writeonlyPool,
-    statementCache,
-  )
+  const userRepo = c.get("ioc").get(UserRepository)
 
   const user = userRepo.getById(userId)
 
@@ -51,6 +29,7 @@ authedApp.use(async (c, next) => {
 })
 
 authedApp.get("/", (c) => {
+  const urlRepo = c.get("ioc").get(UrlRepository)
   const user = c.get("user")
 
   const urls = urlRepo.getByUser(user.id)
@@ -63,6 +42,9 @@ authedApp.get("/", (c) => {
 })
 
 authedApp.get("/urls/:slug", (c) => {
+  const urlRepo = c.get("ioc").get(UrlRepository)
+  const metricRepo = c.get("ioc").get(MetricRepository)
+
   const slug = c.req.param("slug")
   const user = c.get("user")
 
@@ -82,6 +64,7 @@ authedApp.get("/urls/:slug", (c) => {
 })
 
 authedApp.put("/urls", async (c) => {
+  const urlRepo = c.get("ioc").get(UrlRepository)
   const user = c.get("user")
 
   const form = await c.req.formData()
@@ -111,6 +94,7 @@ authedApp.put("/urls", async (c) => {
 })
 
 authedApp.delete("/urls/:slug", (c) => {
+  const urlRepo = c.get("ioc").get(UrlRepository)
   const user = c.get("user")
   const slug = c.req.param("slug")
 

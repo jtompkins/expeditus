@@ -3,9 +3,12 @@ import { Hono } from "hono"
 import { auth } from "./routes/auth.ts"
 import { authedApp } from "./routes/authed-app.tsx"
 import { core } from "./routes/core.tsx"
+import { iocContainer } from "./util/ioc.ts"
+import { AppVariables } from "./routes/env.ts"
 
-const app = new Hono()
 const store = new CookieStore()
+
+const app = new Hono<{ Variables: AppVariables }>()
 
 app.use(
   "*",
@@ -20,6 +23,11 @@ app.use(
     },
   }),
 )
+
+app.use(async (c, next) => {
+  c.set("ioc", iocContainer)
+  await next()
+})
 
 app.route("/auth", auth)
 app.route("/app", authedApp)

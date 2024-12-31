@@ -1,15 +1,10 @@
-import { Hono } from "hono"
 import { githubAuth } from "@hono/oauth-providers/github"
-import { Env } from "./env.ts"
 import { Session } from "@jcs224/hono-sessions"
+import { Hono } from "hono"
 import { UserRepository } from "../repos/userrepository.ts"
-import {
-  readonlyPool,
-  statementCache,
-  writeonlyPool,
-} from "../db/connections.ts"
+import { AppVariables } from "./env.ts"
 
-const auth = new Hono<{ Variables: Env }>()
+const auth = new Hono<{ Variables: AppVariables }>()
 
 auth.use(
   "/callback/github",
@@ -24,11 +19,7 @@ auth.get("/callback/github", (c) => {
   const user = c.get("user-github")
   const session = c.get("session")
 
-  const userRepo = new UserRepository(
-    readonlyPool,
-    writeonlyPool,
-    statementCache,
-  )
+  const userRepo: UserRepository = c.get("ioc").get(UserRepository)
 
   let existingUser = userRepo.getByEmail(user.email!)
 

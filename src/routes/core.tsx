@@ -1,35 +1,20 @@
 import { Hono } from "hono"
 import { getConnInfo } from "hono/deno"
-import { Env } from "./env.ts"
-import { UrlRepository } from "../repos/urlrepository.ts"
-import {
-  readonlyPool,
-  statementCache,
-  writeonlyPool,
-} from "../db/connections.ts"
-import { Login } from "../views/login.tsx"
 import { MetricRepository } from "../repos/metricrepository.ts"
+import { UrlRepository } from "../repos/urlrepository.ts"
+import { Login } from "../views/login.tsx"
+import { AppVariables } from "./env.ts"
 
-const metricRepo = new MetricRepository(
-  readonlyPool,
-  writeonlyPool,
-  statementCache,
-)
-
-const urlRepo = new UrlRepository(
-  readonlyPool,
-  writeonlyPool,
-  statementCache,
-  metricRepo,
-)
-
-const core = new Hono<{ Variables: Env }>()
+const core = new Hono<{ Variables: AppVariables }>()
 
 core.get("/", (c) => {
   return c.html(<Login />)
 })
 
 core.get("/:slug", (c) => {
+  const urlRepo: UrlRepository = c.get("ioc").get(UrlRepository)
+  const metricRepo: MetricRepository = c.get("ioc").get(MetricRepository)
+
   const slug = c.req.param("slug")
 
   const url = urlRepo.getBySlug(slug)
